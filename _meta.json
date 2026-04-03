@@ -1,0 +1,13 @@
+{
+  "name": "communityos-lite",
+  "version": "1.0.0",
+  "description": "Simple Telegram Bot management with LLM and knowledge base. Local-only, no external dependencies.",
+  "author": "Panda",
+  "tags": ["telegram", "bot", "llm", "ai"],
+  "repo": "https://github.com/pandarey0130-lab/communityOS-Lite",
+  "security": {
+    "local_only": true,
+    "requires_env": ["TELEGRAM_BOT_TOKEN", "MINIMAX_API_KEY"],
+    "no_auth": true
+  }
+}
