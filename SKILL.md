@@ -2,11 +2,11 @@
 
 Simple Telegram Bot management with LLM and knowledge base.
 
-## ⚠️ Security Notes
+## ⚠️ Security Warnings
 
-- **Local Only** - Runs on localhost (127.0.0.1), not exposed to internet
-- **No Built-in Auth** - Admin UI has no authentication, only use locally
-- **Credentials Required** - Needs Telegram bot tokens and LLM API keys (see below)
+**⚠️ LOCAL ONLY - 绑定到 127.0.0.1，不要暴露到公网**
+
+**⚠️ NO AUTHENTICATION - Admin UI 无认证，仅本地使用**
 
 ## Required Environment Variables
 
@@ -32,7 +32,7 @@ DEEPSEEK_API_KEY=your_deepseek_key
 ## Quick Start
 
 ```bash
-cd ~/.openclaw/workspace/skills/community-os
+cd ~/.openclaw/workspace/skills/communityOS-Lite
 
 # Create venv
 python -m venv venv
@@ -45,17 +45,25 @@ pip install -r requirements.txt
 cp .env.example .env
 # Edit .env with your API keys
 
-# Run
+# Run (binds to 127.0.0.1 only)
 python admin/app.py
 ```
 
-Then visit: http://localhost:8878/lite
+Visit: http://127.0.0.1:8877/lite
+
+## Security Notes
+
+1. **Local Only** - Server binds to 127.0.0.1, not exposed to internet
+2. **No Built-in Auth** - Admin UI has no authentication
+3. **Credentials Required** - Needs Telegram bot tokens and LLM API keys
+4. **Outbound Network** - Makes calls to Telegram API and LLM providers
+5. **Use Throwaway Keys** - For testing, use separate API keys
 
 ## Architecture
 
 - `admin/app.py` - FastAPI backend (no external dependencies)
 - `admin/lite.html` - Simple UI
-- `bot_engine/` - Bot runtime (self-contained, no harness dependency)
+- `bot_engine/` - Bot runtime (self-contained)
 - `config/` - Configuration files
 
-**Note:** This skill is self-contained. The `harness` referenced in some code is not required for the Lite version to work.
+**Note:** The `harness` module is NOT required for Lite version.

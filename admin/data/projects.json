@@ -1,0 +1,18 @@
+{
+  "projects": [
+    {
+      "id": "general",
+      "name": "通用知识库",
+      "description": "通用产品FAQ",
+      "created_at": "2026-04-03T22:25:54+08:00",
+      "file_count": 0
+    },
+    {
+      "id": "ai_advisor",
+      "name": "AI私人顾问",
+      "description": "AI私人顾问产品知识",
+      "created_at": "2026-04-03T22:25:54+08:00",
+      "file_count": 0
+    }
+  ]
+}

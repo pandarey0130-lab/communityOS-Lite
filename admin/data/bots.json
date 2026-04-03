@@ -1,0 +1,133 @@
+{
+  "bots": [
+    {
+      "bot_id": "panda",
+      "name": "小P",
+      "avatar": "🐼",
+      "bot_token": "TELEGRAM_BOT_TOKEN_PANDA",
+      "is_admin": true,
+      "enabled": true,
+      "created_at": "2026-04-03T22:25:54+08:00",
+      "llm": {
+        "provider": "minimax",
+        "model": "MiniMax-2.7",
+        "api_key_env": "MINIMAX_API_KEY"
+      },
+      "modes": {
+        "passive_qa": true,
+        "welcome": true,
+        "join_discussion": true,
+        "boost_atmosphere": false,
+        "scheduled_broadcast": true,
+        "api_data_push": false
+      },
+      "knowledge": {
+        "enabled": true,
+        "project_id": "general"
+      },
+      "welcome": {
+        "enabled": true,
+        "template": "欢迎 {name} 加入群聊！🎉 有问题随时问我~"
+      },
+      "broadcast": {
+        "schedule": "0 9 * * *",
+        "content_source": "manual",
+        "api_endpoint": "",
+        "template": "早安！今天是 {date}，祝你有美好的一天！☀️"
+      },
+      "interval_broadcast": {
+        "enabled": false,
+        "message": "",
+        "interval_seconds": 30
+      },
+      "groups": [],
+      "soul": "友善、乐于助人的AI助手"
+    },
+    {
+      "bot_id": "cypher",
+      "name": "Cypher",
+      "avatar": "🔐",
+      "bot_token": "TELEGRAM_BOT_TOKEN_CYPHER",
+      "is_admin": false,
+      "enabled": true,
+      "created_at": "2026-04-03T22:25:54+08:00",
+      "llm": {
+        "provider": "claude_code",
+        "model": "Claude-3.5",
+        "api_key_env": "CLAUDE_API_KEY"
+      },
+      "modes": {
+        "passive_qa": true,
+        "welcome": false,
+        "join_discussion": true,
+        "boost_atmosphere": false,
+        "scheduled_broadcast": false,
+        "api_data_push": true
+      },
+      "knowledge": {
+        "enabled": false,
+        "project_id": ""
+      },
+      "welcome": {
+        "enabled": false,
+        "template": ""
+      },
+      "broadcast": {
+        "schedule": "0 20 * * *",
+        "content_source": "api",
+        "api_endpoint": "https://api.example.com/news",
+        "template": "{content}"
+      },
+      "interval_broadcast": {
+        "enabled": false,
+        "message": "",
+        "interval_seconds": 30
+      },
+      "groups": [],
+      "soul": "专注于技术与安全的AI助手"
+    },
+    {
+      "bot_id": "buzz",
+      "name": "Buzz",
+      "avatar": "📣",
+      "bot_token": "TELEGRAM_BOT_TOKEN_BUZZ",
+      "is_admin": false,
+      "enabled": false,
+      "created_at": "2026-04-03T22:25:54+08:00",
+      "llm": {
+        "provider": "apiyi",
+        "model": "GPT-4o",
+        "api_key_env": "APIYI_KEY"
+      },
+      "modes": {
+        "passive_qa": false,
+        "welcome": true,
+        "join_discussion": false,
+        "boost_atmosphere": true,
+        "scheduled_broadcast": true,
+        "api_data_push": false
+      },
+      "knowledge": {
+        "enabled": false,
+        "project_id": ""
+      },
+      "welcome": {
+        "enabled": true,
+        "template": "欢迎来到 {group_name}！我是Buzz ~ 🚀"
+      },
+      "broadcast": {
+        "schedule": "0 12,18 * * *",
+        "content_source": "rss",
+        "api_endpoint": "https://feeds.example.com/web3",
+        "template": "【Web3日报】{content}"
+      },
+      "interval_broadcast": {
+        "enabled": false,
+        "message": "",
+        "interval_seconds": 30
+      },
+      "groups": [],
+      "soul": "热情洋溢的氛围组AI助手"
+    }
+  ]
+}

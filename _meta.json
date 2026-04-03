@@ -1,6 +1,6 @@
 {
   "name": "communityos-lite",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Simple Telegram Bot management with LLM and knowledge base. Local-only, no external dependencies.",
   "author": "Panda",
   "tags": ["telegram", "bot", "llm", "ai"],
@@ -8,6 +8,7 @@
   "security": {
     "local_only": true,
     "requires_env": ["TELEGRAM_BOT_TOKEN", "MINIMAX_API_KEY"],
-    "no_auth": true
+    "no_auth": true,
+    "outbound": ["api.telegram.org", "LLM providers"]
   }
 }

@@ -1317,4 +1317,5 @@ async def telegram_webhook(bot_id: str, request: Request, update: dict):
 # ── 运行 ───────────────────────────────────────────────────
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("admin.app:app", host="0.0.0.0", port=8877, reload=True)
+    # ⚠️ 绑定到 127.0.0.1，仅本地访问，不要暴露到公网
+    uvicorn.run("admin.app:app", host="127.0.0.1", port=8877, reload=False)
