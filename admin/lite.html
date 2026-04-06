@@ -17,11 +17,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
 .card-header { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: #1a1a1a; }
 
-/* Stats */
+/* Stats（Lite 仅 Telegram Bot：只展示 Bots） */
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.stats-lite { grid-template-columns: minmax(160px, 220px); max-width: 240px; }
 .stat { background: #fff; border-radius: 10px; padding: 16px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
 .stat-value { font-size: 28px; font-weight: 700; color: #2563eb; }
 .stat-label { font-size: 13px; color: #666; margin-top: 4px; }
+.stat-sub { font-size: 12px; color: #888; margin-top: 6px; }
 
 /* Tables */
 table { width: 100%; border-collapse: collapse; }
@@ -80,11 +82,19 @@ tr:hover { background: #fafafa; }
 .toast.success { background: #22c55e; }
 .toast.error { background: #ef4444; }
 
-/* Section tabs */
-.tabs { display: flex; gap: 4px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 10px; }
-.tab { padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; color: #666; }
+/* Section tabs（button 避免预览/叠层下 div 点不中；z-index 避免被下方卡片阴影区误挡） */
+.tabs {
+  display: flex; gap: 4px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 10px;
+  position: relative; z-index: 5; isolation: isolate;
+}
+.tab {
+  padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; color: #666;
+  border: none; background: transparent; font: inherit; text-align: center; line-height: 1.3;
+  -webkit-tap-highlight-color: transparent;
+}
 .tab:hover { background: #f5f5f5; }
 .tab.active { background: #2563eb; color: #fff; }
+.tab:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
 
 /* LLM Config */
 .llm-card { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -124,17 +134,18 @@ tr:hover { background: #fafafa; }
   </div>
 
   <!-- Tabs -->
-  <div class="tabs">
-    <div class="tab active" data-tab="bots">🤖 Bots</div>
-    <div class="tab" data-tab="llm">🔑 LLM</div>
+  <div class="tabs" id="main-tabs" role="tablist" aria-label="Main">
+    <button type="button" class="tab active" role="tab" aria-selected="true" data-tab="bots">🤖 Bots</button>
+    <button type="button" class="tab" role="tab" aria-selected="false" data-tab="llm">🔑 LLM</button>
   </div>
 
-  <!-- Stats -->
-  <div class="stats" id="stats">
-    <div class="stat"><div class="stat-value" id="s-bots">0</div><div class="stat-label">Bots</div></div>
-    <div class="stat"><div class="stat-value" id="s-groups">0</div><div class="stat-label">Groups</div></div>
-    <div class="stat"><div class="stat-value" id="s-projects">0</div><div class="stat-label">Projects</div></div>
-    <div class="stat"><div class="stat-value" id="s-broadcasts">0</div><div class="stat-label">Broadcasts</div></div>
+  <!-- Stats：仅 Bots（与 Groups/Projects/Broadcasts 等完整后台无关） -->
+  <div class="stats stats-lite" id="stats">
+    <div class="stat">
+      <div class="stat-value" id="s-bots">0</div>
+      <div class="stat-label">Bots</div>
+      <div class="stat-sub" id="s-bots-sub">—</div>
+    </div>
   </div>
 
   <!-- Bots Section -->
@@ -192,36 +203,6 @@ tr:hover { background: #fafafa; }
       </div>
       <button class="btn btn-primary" onclick="saveLlmConfig()">💾 Save</button>
       <span id="llm-status" style="margin-left:12px;color:#22c55e"></span>
-    </div>
-  </div>
-</div>
-
-
-    <div style="padding:16px">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-        <div>
-          <label style="font-size:13px;color:#666;display:block;margin-bottom:4px">文章标题 *</label>
-          <input id="wc-title" type="text" placeholder="输入文章标题" style="width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px">
-        </div>
-        <div>
-          <label style="font-size:13px;color:#666;display:block;margin-bottom:4px">作者</label>
-          <input id="wc-author" type="text" placeholder="作者名称（选填）" value="Panda" style="width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px">
-        </div>
-      </div>
-      <div style="margin-bottom:12px">
-        <label style="font-size:13px;color:#666;display:block;margin-bottom:4px">摘要（选填）</label>
-        <input id="wc-digest" type="text" placeholder="留空则自动提取前54字" style="width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px">
-      </div>
-      <div style="margin-bottom:12px">
-        <label style="font-size:13px;color:#666;display:block;margin-bottom:4px">封面图</label>
-        <input id="wc-cover" type="file" accept="image/*" style="font-size:13px">
-        <div style="font-size:12px;color:#999;margin-top:4px">支持 JPG/PNG，建议 2:1 比例（如 900x450）</div>
-      </div>
-      <div style="margin-bottom:12px">
-        <label style="font-size:13px;color:#666;display:block;margin-bottom:4px">文章内容（HTML格式）</label>
-        <textarea id="wc-content" placeholder="粘贴文章HTML内容，或直接输入文字..." style="width:100%;min-height:300px;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:14px;line-height:1.8;font-family:inherit;resize:vertical"></textarea>
-      </div>
-      <div id="wc-status" style="font-size:13px;padding:8px 12px;border-radius:6px;display:none"></div>
     </div>
   </div>
 </div>
@@ -312,37 +293,56 @@ function showToast(msg, type = '') {
 
 function closeModal(id) { $(id).style.display = 'none'; }
 
-const api = async (url, opts = {}) => {
+function apiBase() {
+  const b = (typeof window.__COMMUNITYOS_API_ORIGIN__ === 'string' && window.__COMMUNITYOS_API_ORIGIN__) || '';
+  return b.replace(/\/$/, '');
+}
+const api = async (path, opts = {}) => {
+  const url = apiBase() + path;
   const r = await fetch(url, {...opts, credentials:'include'});
-  const d = await r.json();
-  if (!d.ok) throw new Error(d.error || 'Error');
+  let d;
+  try {
+    d = await r.json();
+  } catch (e) {
+    throw new Error(r.status + ' ' + (r.statusText || 'Not JSON'));
+  }
+  if (!r.ok) throw new Error(d.detail || d.error || r.statusText || 'HTTP ' + r.status);
+  if (!d.ok) throw new Error(d.error || d.detail || 'Error');
   return d;
 };
 
-// Tab switching
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    const tabName = tab.dataset.tab;
-    ['bots', 'llm'].forEach(s => {
-      $(`section-${s}`).style.display = s === tabName ? 'block' : 'none';
-    });
-    if (tabName === 'llm') {
-      loadLlmConfig();
-      checkTelegramStatus();
-    }
+// Tab switching（委托到 #main-tabs，避免预览里子节点命中异常）
+function switchMainTab(tabName) {
+  document.querySelectorAll('#main-tabs .tab').forEach(t => {
+    const on = t.dataset.tab === tabName;
+    t.classList.toggle('active', on);
+    t.setAttribute('aria-selected', on ? 'true' : 'false');
   });
+  ['bots', 'llm'].forEach(s => {
+    const el = $(`section-${s}`);
+    if (el) el.style.display = s === tabName ? 'block' : 'none';
+  });
+  if (tabName === 'llm') {
+    loadLlmConfig();
+    checkTelegramStatus();
+  }
+}
+document.getElementById('main-tabs')?.addEventListener('click', (e) => {
+  let hit = e.target;
+  if (hit && hit.nodeType !== Node.ELEMENT_NODE) hit = hit.parentElement;
+  const tab = hit && hit.closest ? hit.closest('.tab') : null;
+  if (!tab || !tab.closest('#main-tabs')) return;
+  const name = tab.dataset.tab;
+  if (name) switchMainTab(name);
 });
 
 // Load data
 async function init() {
   try {
     const d = await api('/api/dashboard');
-    $('s-bots').textContent = d.stats?.active_bots || 0;
-    $('s-groups').textContent = d.stats?.total_groups || 0;
-    $('s-projects').textContent = d.stats?.total_projects || 0;
-    $('s-broadcasts').textContent = d.stats?.active_broadcasts || 0;
+    $('s-bots').textContent = d.stats?.total_bots ?? 0;
+    const en = d.stats?.active_bots ?? 0;
+    $('s-bots-sub').textContent = en + ' enabled';
   } catch(e) {}
   await loadBots();
 }
@@ -352,7 +352,12 @@ async function loadBots() {
     const d = await api('/api/bots');
     bots = d.bots || [];
     renderBots();
-  } catch(e) { showToast('Failed to load bots', 'error'); }
+  } catch(e) {
+    console.error(e);
+    bots = [];
+    renderBots();
+    showToast('加载 Bot 列表失败：' + (e.message || '请确认用浏览器打开 http://127.0.0.1:8877/lite 且后台已启动'), 'error');
+  }
 }
 
 function renderBots() {
@@ -555,16 +560,6 @@ async function saveLlmConfig() {
     setTimeout(() => $('llm-status').textContent = '', 2000);
   } catch(e) { showToast(e.message, 'error'); }
 }
-
-    }
-  } catch(e) {
-    statusEl.style.background = '#fff1f0';
-    statusEl.style.color = '#cf2222';
-    statusEl.textContent = '❌ 网络错误：' + e.message;
-    showToast('网络错误：' + e.message, 'error');
-  }
-}
-
 
 init();
 </script>

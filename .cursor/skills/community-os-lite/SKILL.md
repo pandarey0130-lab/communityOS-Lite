@@ -20,7 +20,7 @@ python -m venv venv
 source venv/bin/activate   # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 cp .env.example .env         # 按需填写密钥
-PYTHONPATH=. python admin/app.py
+python admin/app.py
 ```
 
 - 管理端监听：**`127.0.0.1:8877`**（代码写死，与 `.env.example` 里的 PORT 可能不一致）

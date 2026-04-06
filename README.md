@@ -28,11 +28,17 @@ cp .env.example .env
 # LLM key for Lite UI is stored in admin/data/llm_config.json (gitignored).
 # First run: copy admin/data/llm_config.example.json to admin/data/llm_config.json, then set api_key in the UI or file — never commit real keys.
 
-# Run (project root must be on PYTHONPATH for package imports)
-PYTHONPATH=. python admin/app.py
+# Run（无需设置 PYTHONPATH，在仓库根目录执行即可）
+python admin/app.py
 ```
 
 Visit: http://127.0.0.1:8877/lite
+
+Optional smoke test (no server on port needed):
+
+```bash
+python scripts/smoke_lite.py
+```
 
 ## How to Use
 

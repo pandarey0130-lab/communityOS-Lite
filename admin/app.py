@@ -16,6 +16,12 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 from contextlib import asynccontextmanager
+
+# 支持直接 `python admin/app.py` 启动，无需设置 PYTHONPATH（项目根加入 sys.path）
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
 from fastapi import FastAPI, HTTPException, Request, Form, UploadFile, File, Response
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -296,9 +302,17 @@ async def root(request: Request):
     return RedirectResponse(url="/admin")
 
 @app.get("/lite")
-async def lite_page():
-    """Lite version - simple UI"""
-    return HTMLResponse(open(BASE_DIR / "admin" / "lite.html").read())
+async def lite_page(request: Request):
+    """Lite version - simple UI（注入 API 根地址，避免内置预览里相对 /api 指错主机）"""
+    path = BASE_DIR / "admin" / "lite.html"
+    html = path.read_text(encoding="utf-8")
+    base = str(request.base_url).rstrip("/")
+    inject = f"<script>window.__COMMUNITYOS_API_ORIGIN__={json.dumps(base)};</script>"
+    if "</head>" in html:
+        html = html.replace("</head>", inject + "\n</head>", 1)
+    else:
+        html = inject + html
+    return HTMLResponse(html)
 
 @app.get("/login")
 async def login_page(request: Request):
