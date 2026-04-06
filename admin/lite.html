@@ -113,6 +113,13 @@ tr:hover { background: #fafafa; }
       <p><strong>3.</strong> (Optional) Paste knowledge text → Bot answers only within this scope</p>
       <p><strong>4.</strong> Invite bot to Telegram group → <strong>Done!</strong> (no group config needed)</p>
       <p><strong>5.</strong> Chat in group → Bot auto-replies | <strong>Allow DM off</strong> = no private chats</p>
+      <details style="margin-top:12px">
+        <summary style="cursor:pointer;font-weight:600">📵 Group Privacy / 群隐私（群里没反应必看）</summary>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid #bae6fd;font-size:13px;line-height:1.75">
+          <p><strong>EN:</strong> New Telegram bots default to <strong>Group Privacy ON</strong>. In groups, Telegram often sends only <code>/commands</code>, <strong>replies to the bot</strong>, or messages that <strong>@your_bot</strong>. For <strong>normal group messages</strong> to reach this app, open <strong>@BotFather</strong> → <strong>/mybots</strong> → your bot → <strong>Bot Settings</strong> → <strong>Group Privacy</strong> → <strong>Turn off</strong>.</p>
+          <p><strong>中文：</strong>新机器人默认开启<strong>群隐私</strong>，群里只有命令、回复机器人、@机器人 等消息会下发。需要「普通聊天也自动回复」时：打开 <strong>@BotFather</strong> → 发 <strong>/mybots</strong> → 选你的机器人 → <strong>Bot Settings</strong> → <strong>Group Privacy</strong> → <strong>Turn off</strong>（关闭群隐私）。私聊不受此限制。</p>
+        </div>
+      </details>
     </div>
   </div>
 
@@ -185,6 +192,36 @@ tr:hover { background: #fafafa; }
       </div>
       <button class="btn btn-primary" onclick="saveLlmConfig()">💾 Save</button>
       <span id="llm-status" style="margin-left:12px;color:#22c55e"></span>
+    </div>
+  </div>
+</div>
+
+
+    <div style="padding:16px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label style="font-size:13px;color:#666;display:block;margin-bottom:4px">文章标题 *</label>
+          <input id="wc-title" type="text" placeholder="输入文章标题" style="width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px">
+        </div>
+        <div>
+          <label style="font-size:13px;color:#666;display:block;margin-bottom:4px">作者</label>
+          <input id="wc-author" type="text" placeholder="作者名称（选填）" value="Panda" style="width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px">
+        </div>
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:13px;color:#666;display:block;margin-bottom:4px">摘要（选填）</label>
+        <input id="wc-digest" type="text" placeholder="留空则自动提取前54字" style="width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px">
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:13px;color:#666;display:block;margin-bottom:4px">封面图</label>
+        <input id="wc-cover" type="file" accept="image/*" style="font-size:13px">
+        <div style="font-size:12px;color:#999;margin-top:4px">支持 JPG/PNG，建议 2:1 比例（如 900x450）</div>
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:13px;color:#666;display:block;margin-bottom:4px">文章内容（HTML格式）</label>
+        <textarea id="wc-content" placeholder="粘贴文章HTML内容，或直接输入文字..." style="width:100%;min-height:300px;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:14px;line-height:1.8;font-family:inherit;resize:vertical"></textarea>
+      </div>
+      <div id="wc-status" style="font-size:13px;padding:8px 12px;border-radius:6px;display:none"></div>
     </div>
   </div>
 </div>
@@ -518,6 +555,16 @@ async function saveLlmConfig() {
     setTimeout(() => $('llm-status').textContent = '', 2000);
   } catch(e) { showToast(e.message, 'error'); }
 }
+
+    }
+  } catch(e) {
+    statusEl.style.background = '#fff1f0';
+    statusEl.style.color = '#cf2222';
+    statusEl.textContent = '❌ 网络错误：' + e.message;
+    showToast('网络错误：' + e.message, 'error');
+  }
+}
+
 
 init();
 </script>
