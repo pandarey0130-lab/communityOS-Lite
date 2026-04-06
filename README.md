@@ -14,8 +14,8 @@ Simple Telegram Bot management with LLM and knowledge base.
 
 ```bash
 # Clone
-git clone https://github.com/panda-community/community-os-skill.git
-cd community-os-skill
+git clone https://github.com/pandarey0130-lab/communityOS-Lite.git
+cd communityOS-Lite
 
 # Install
 python -m venv venv
@@ -24,13 +24,13 @@ pip install -r requirements.txt
 
 # Configure
 cp .env.example .env
-# Edit .env with your tokens
+# Edit .env with your tokens (optional if you set keys in Lite UI)
 
-# Run
-python admin/app.py
+# Run (project root must be on PYTHONPATH for package imports)
+PYTHONPATH=. python admin/app.py
 ```
 
-Visit: http://localhost:8878/lite
+Visit: http://127.0.0.1:8877/lite
 
 ## How to Use
 
@@ -59,9 +59,8 @@ bot_engine/
   manager.py  - Bot instance manager
   bot_instance.py - Individual bot logic
   llm/        - LLM provider implementations
-config/
-  bots.json   - Bot configurations
-  llm_config.json - Global LLM settings
+admin/data/
+  bots.json, llm_config.json - Runtime config (fill via Lite UI; not committed with secrets)
 ```
 
 ## License

@@ -1,69 +1,23 @@
 # CommunityOS-Lite
 
-Simple Telegram Bot management with LLM and knowledge base.
+面向 **Cursor Agent** 的完整说明已迁移至：
 
-## ⚠️ Security Warnings
+**[`.cursor/skills/community-os-lite/SKILL.md`](.cursor/skills/community-os-lite/SKILL.md)**
 
-**⚠️ LOCAL ONLY - 绑定到 127.0.0.1，不要暴露到公网**
+（含 YAML frontmatter、`name: community-os-lite`、触发词、准确端口 `127.0.0.1:8877`、数据路径与排错。）
 
-**⚠️ NO AUTHENTICATION - Admin UI 无认证，仅本地使用**
+以下仅作人类速查。
 
-## Required Environment Variables
+## 安全
 
-```bash
-# Telegram Bot Token (from @BotFather)
-TELEGRAM_BOT_TOKEN_XXX=your_bot_token
+- 仅本地使用；`/lite` 当前无认证，勿暴露到公网。
 
-# LLM API Keys (at least one required)
-MINIMAX_API_KEY=your_minimax_key     # Recommended - has free tier
-OPENAI_API_KEY=your_openai_key
-ANTHROPIC_API_KEY=your_anthropic_key
-DEEPSEEK_API_KEY=your_deepseek_key
-```
-
-## Features
-
-- 🤖 **Bot Management** - Create, edit, delete Telegram bots
-- 🔑 **Global LLM Config** - Unified LLM settings (MiniMax, OpenAI, Anthropic, DeepSeek)
-- 📚 **Text Knowledge Base** - Paste text directly, bot answers within knowledge scope
-- 💬 **Auto Reply** - Bot auto-replies in groups without group config
-- 🔒 **DM Control** - Toggle Allow DM to control private chat
-
-## Quick Start
+## 一键运行
 
 ```bash
-cd ~/.openclaw/workspace/skills/communityOS-Lite
-
-# Create venv
-python -m venv venv
-source venv/bin/activate
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Configure environment
 cp .env.example .env
-# Edit .env with your API keys
-
-# Run (binds to 127.0.0.1 only)
-python admin/app.py
+PYTHONPATH=. python admin/app.py
 ```
 
-Visit: http://127.0.0.1:8877/lite
-
-## Security Notes
-
-1. **Local Only** - Server binds to 127.0.0.1, not exposed to internet
-2. **No Built-in Auth** - Admin UI has no authentication
-3. **Credentials Required** - Needs Telegram bot tokens and LLM API keys
-4. **Outbound Network** - Makes calls to Telegram API and LLM providers
-5. **Use Throwaway Keys** - For testing, use separate API keys
-
-## Architecture
-
-- `admin/app.py` - FastAPI backend (no external dependencies)
-- `admin/lite.html` - Simple UI
-- `bot_engine/` - Bot runtime (self-contained)
-- `config/` - Configuration files
-
-**Note:** The `harness` module is NOT required for Lite version.
+打开：http://127.0.0.1:8877/lite
