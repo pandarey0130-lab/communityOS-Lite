@@ -32,7 +32,7 @@ PYTHONPATH=. python admin/app.py
 - **仅本地**：绑定 127.0.0.1，不要把端口暴露到公网。
 - **`/lite` 无会话校验**：任何人能打开本机该 URL 即可改 Bot 配置；生产请加反向代理与认证或改代码。
 - **出站流量**：Telegram Bot API、所选 LLM 厂商 API。
-- **敏感信息**：Bot token、API key 只在 `.env` 或 `admin/data/bots.json` 中配置；不要在 skill、issue、聊天记录里粘贴真实 token。
+- **敏感信息**：Bot token、API key 只在 `.env` 或 `admin/data/bots.json` / `admin/data/llm_config.json` 中配置；这两份 JSON 默认 **gitignore**，仓库内仅有 **`admin/data/llm_config.example.json`**（空 key）作模板；不要在 skill、issue、聊天记录里粘贴真实 token 或 key。
 
 ## 环境变量
 

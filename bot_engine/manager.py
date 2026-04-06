@@ -44,20 +44,38 @@ class BotManager:
         # Bot 实例缓存: {(bot_id, group_id): BotInstance}
         self._instances: Dict[tuple, BotInstance] = {}
 
+    def _bot_dict_for_instance(
+        self, bot_id: str, group_id: Optional[str] = None
+    ) -> Optional[dict]:
+        """从 YAML/JSON 路径加载为 BotInstance 所需的 dict，并合并群级 modes 覆盖。"""
+        if bot_id not in self.bot_configs:
+            return None
+        path = self.bot_configs[bot_id]
+        try:
+            file_cfg = BotConfig(path)
+            cfg = dict(file_cfg.config)
+        except Exception as e:
+            print(f"读取 Bot 配置失败 {bot_id}: {e}")
+            return None
+        if group_id:
+            group_cfg = self.group_configs.get(group_id)
+            if group_cfg:
+                merged = dict(cfg.get("modes") or {})
+                merged.update(group_cfg.get_bot_modes(bot_id))
+                cfg["modes"] = merged
+        return cfg
+
     def get_bot_instance(self, bot_id: str, group_id: Optional[str] = None) -> Optional[BotInstance]:
         """获取 Bot 实例"""
         key = (bot_id, group_id)
         if key in self._instances:
             return self._instances[key]
 
-        if bot_id not in self.bot_configs:
-            return None
-
-        bot_config_path = self.bot_configs[bot_id]
-        group_config = self.group_configs.get(group_id) if group_id else None
-
         try:
-            instance = BotInstance(bot_config_path, group_config, self.base_dir)
+            cfg = self._bot_dict_for_instance(bot_id, group_id)
+            if not cfg:
+                return None
+            instance = BotInstance(cfg)
             self._instances[key] = instance
             return instance
         except Exception as e:
@@ -102,9 +120,12 @@ class BotManager:
         else:
             # 没有group配置时，所有启用的Bot都参与响应（Bot被加入群后自动生效）
             bots = []
-            for bot_id, cfg_path in self.bot_configs.items():
+            for bot_id in self.bot_configs:
                 try:
-                    instance = BotInstance(cfg_path, None, self.base_dir)
+                    cfg = self._bot_dict_for_instance(bot_id, None)
+                    if not cfg:
+                        continue
+                    instance = BotInstance(cfg)
                     if instance.config.modes.get("passive_qa"):
                         bots.append(instance)
                 except Exception:

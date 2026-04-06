@@ -25,6 +25,8 @@ pip install -r requirements.txt
 # Configure
 cp .env.example .env
 # Edit .env with your tokens (optional if you set keys in Lite UI)
+# LLM key for Lite UI is stored in admin/data/llm_config.json (gitignored).
+# First run: copy admin/data/llm_config.example.json to admin/data/llm_config.json, then set api_key in the UI or file — never commit real keys.
 
 # Run (project root must be on PYTHONPATH for package imports)
 PYTHONPATH=. python admin/app.py

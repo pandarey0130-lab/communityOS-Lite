@@ -118,3 +118,15 @@ class BotInstance:
         """生成欢迎消息"""
         template = self.config.knowledge.get("welcome_template", "欢迎 {name} 加入群聊！")
         return template.replace("{name}", member_name)
+
+    def respond_to_mention(self, message: str, context: Dict[str, Any] = None) -> str:
+        """群内被 @ 时的响应（不依赖 passive_qa；仍尊重 enabled 与私聊权限）"""
+        context = context or {}
+        if not self.config.enabled:
+            return ""
+        if context.get("is_private_chat") and not self.config.allow_pm:
+            return ""
+        text = (message or "").strip()
+        if not text:
+            return ""
+        return self._answer_with_knowledge(text)

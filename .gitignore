@@ -7,3 +7,4 @@ logs/
 chroma_db/
 knowledge/
 admin/data/*.json
+!admin/data/llm_config.example.json
