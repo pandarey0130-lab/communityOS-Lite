@@ -1320,6 +1320,13 @@ async def telegram_webhook(bot_id: str, request: Request, update: dict):
         return JSONResponse({"ok": False, "error": str(e)})
 
 # ── 运行 ───────────────────────────────────────────────────
+# 清理旧字节码缓存，防止代码更新后仍加载旧版本（模块级执行，import 和直接运行都触发）
+import shutil as _shutil
+_pycache = Path(__file__).parent / "__pycache__"
+if _pycache.exists():
+    _shutil.rmtree(_pycache)
+    print(f"[STARTUP] Cleared __pycache__")
+
 if __name__ == "__main__":
     import uvicorn
     # ⚠️ 绑定到 127.0.0.1，仅本地访问，不要暴露到公网
