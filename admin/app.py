@@ -11,13 +11,38 @@ import hashlib
 import shutil
 import re
 import secrets
+import asyncio
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Request, Form, UploadFile, File, Response
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+
+# Telegram Runner 全局进程
+telegram_process = None
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """应用启动时自动启动 Telegram Runner"""
+    global telegram_process
+    # 启动 Telegram Runner
+    import subprocess
+    if telegram_process is None or telegram_process.poll() is not None:
+        telegram_process = subprocess.Popen(
+            [sys.executable, str(BASE_DIR / "admin" / "telegram_runner.py")],
+            cwd=str(BASE_DIR),
+            env={**os.environ}
+        )
+        log_action("telegram_auto_start", "system", "Telegram Runner auto-started on app startup")
+        print("[STARTUP] Telegram Runner auto-started")
+    yield
+    # 应用关闭时清理
+    if telegram_process:
+        telegram_process.terminate()
+        telegram_process = None
 
 # 加载 .env 文件
 ENV_FILE = Path(__file__).parent.parent / ".env"
@@ -42,7 +67,7 @@ KB_DIR.mkdir(parents=True, exist_ok=True)
 CHROMA_DIR.mkdir(parents=True, exist_ok=True)
 
 # ── FastAPI App ─────────────────────────────────────────────
-app = FastAPI(title="CommunityOS 管理后台")
+app = FastAPI(title="CommunityOS 管理后台", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 

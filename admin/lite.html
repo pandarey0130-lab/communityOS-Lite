@@ -148,7 +148,6 @@ tr:hover { background: #fafafa; }
         <span>🔑 LLM Configuration</span>
         <div>
           <span id="telegram-status" style="margin-right:12px;color:#666">⚪ Offline</span>
-          <button class="btn btn-secondary btn-sm" onclick="toggleTelegram()">▶️ Start</button>
         </div>
       </div>
       <div class="form-group">
@@ -296,7 +295,6 @@ document.querySelectorAll('.tab').forEach(tab => {
       loadLlmConfig();
       checkTelegramStatus();
     }
-    if (tabName === 'llm') loadLlmConfig();
   });
 });
 
@@ -430,8 +428,6 @@ async function checkTelegramStatus() {
     telegramRunning = d.running;
     $('telegram-status').textContent = telegramRunning ? '🟢 Running' : '⚪ Offline';
     $('telegram-status').style.color = telegramRunning ? '#22c55e' : '#666';
-    const btn = document.querySelector('[onclick="toggleTelegram()"]');
-    if (btn) btn.textContent = telegramRunning ? '⏹ Stop' : '▶️ Start';
   } catch(e) {}
 }
 
