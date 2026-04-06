@@ -36,9 +36,11 @@ Visit: http://127.0.0.1:8877/lite
 
 1. Go to **@BotFather** in Telegram → Create new bot → Copy token
 2. Paste token in Lite UI → Click Save
-3. (Optional) Paste knowledge text → Bot answers only within this scope
-4. Invite bot to Telegram group → **Done!**
-5. Chat in group → Bot auto-replies
+3. Configure **LLM** in Lite (API key + provider) → Save
+4. (Optional) Paste knowledge text → Bot answers only within this scope
+5. **If you use the bot in a group — Telegram Bot Privacy:** New bots default to **Privacy mode ON**. In groups, Telegram only delivers **commands** (`/...`) or messages that **@mention your bot**. For normal group messages to reach the bot (so auto-reply works on plain chat), open **@BotFather** → **/mybots** → select your bot → **Bot Settings** → **Group Privacy** → **Turn off** (Disable).
+6. Invite bot to Telegram group → **Done!**
+7. Chat in group (or DM) → Bot replies when it receives your text
 
 ## LLM Providers
 

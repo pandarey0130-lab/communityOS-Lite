@@ -60,6 +60,7 @@ PYTHONPATH=. python admin/app.py
 
 - **私聊**：默认 `allow_pm` 为 true 时回复文本消息。
 - **群 / 超级群**：`modes.passive_qa` 为 true 时对文本消息自动应答（无需单独配群）。
+- **Telegram 群隐私（必看）**：新 Bot 默认开启 **Privacy**。群里只有 **`/` 命令** 或 **@机器人用户名** 的消息会推给 bot；若希望**普通群消息**也能触发自动回复，在 **@BotFather** → `/mybots` → 选机器人 → **Bot Settings** → **Group Privacy** → **Turn off**（Disable）。
 - **知识库**：`knowledge.text` 非空时，runner 会把片段拼进用户问题前再调用 LLM。
 - **发送**：`sendMessage` 使用纯文本，避免 Markdown 特殊字符导致失败。
 
@@ -74,6 +75,6 @@ PYTHONPATH=. python admin/app.py
 
 ## 排错
 
-- **Bot 无回复**：确认 runner 已启动；`bots.json` 里 `enabled` 与 token；群聊是否关闭 `passive_qa`。
+- **Bot 无回复**：确认 runner 已启动；`bots.json` 里 `enabled` 与 token；群聊是否关闭 `passive_qa`；**群里是否仍开启 Privacy**（未 @、非命令时 Telegram 不会下发消息）。
 - **返回「LLM API Key 未配置」**：在 Lite「LLM 配置」保存 key，或设置环境变量并与 `llm_config` 一致。
 - **getUpdates 报错**：检查 token、网络、是否多实例共用一个 token 抢 offset。
