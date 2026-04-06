@@ -954,7 +954,7 @@ async def api_project_reindex(proj_id: str, request: Request):
         import chromadb
         from chromadb.config import Settings
         client = chromadb.PersistentClient(path=str(chroma_path))
-        collection = client.get_or_create_collection(name=proj_id)
+        collection = client.get_or_create_collection(name=f"kb_{proj_id}")
 
         docs = []
         ids = []
@@ -964,12 +964,13 @@ async def api_project_reindex(proj_id: str, request: Request):
                     # PDF暂跳过，保留路径信息
                     continue
                 text = f.read_text(encoding="utf-8", errors="ignore")
-                # 简单分块（每500字一段）
-                for i in range(0, len(text), 500):
-                    chunk = text[i:i+500].strip()
+                # 简单分块（每100字一段，小文件也能索引）
+                chunk_size = 100
+                for i in range(0, len(text), chunk_size):
+                    chunk = text[i:i+chunk_size].strip()
                     if chunk:
                         docs.append(chunk)
-                        ids.append(f"{f.stem}_{i//500}")
+                        ids.append(f"{f.name}_{i//chunk_size}")
             except Exception:
                 continue
 
@@ -1020,19 +1021,23 @@ async def api_knowledge_search(request: Request, data: dict):
     if not query:
         raise HTTPException(status_code=400, detail="缺少query参数")
     try:
-        sys.path.insert(0, str(BASE_DIR))
-        from knowledge_base.indexer import KnowledgeIndexer
-        from knowledge_base.vector_store import VectorStore
-        vs = VectorStore(str(BASE_DIR / "chroma_db"))
-        collection = f"kb_{project_id}" if project_id else "kb_default"
-        results = vs.query(collection, query, top_k=top_k)
+        import chromadb
+        chroma_path = str(CHROMA_DIR / f"kb_{project_id}") if project_id else str(CHROMA_DIR / "kb_default")
+        client = chromadb.PersistentClient(path=chroma_path)
+        collection_name = f"kb_{project_id}" if project_id else "kb_default"
+        try:
+            collection = client.get_collection(name=collection_name)
+        except Exception:
+            return JSONResponse({"ok": True, "results": [], "error": f"项目 {project_id} 尚未建立索引"})
+        results = collection.query(query_texts=[query], n_results=top_k)
         docs = results.get("documents", [[]])[0] if results.get("documents") else []
-        metas = results.get("metasDatas", [{}])[0] if results.get("metasDatas") else [{}]
+        metas = results.get("metadatas", [{}])[0] if results.get("metadatas") else [{}]
         formatted = []
         for i, doc in enumerate(docs[:top_k]):
+            meta = metas[i] if i < len(metas) else {}
             formatted.append({
                 "content": doc if isinstance(doc, str) else str(doc),
-                "source": metas[i].get("source", "unknown") if i < len(metas) else "unknown"
+                "source": meta.get("source", meta.get("filename", "unknown")) if isinstance(meta, dict) else "unknown"
             })
         return JSONResponse({"ok": True, "results": formatted})
     except Exception as e:
