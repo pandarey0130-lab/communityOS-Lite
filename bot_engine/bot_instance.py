@@ -76,12 +76,15 @@ class BotInstance:
         """调用LLM生成回答"""
         from bot_engine.llm import LLMFactory
         
-        soul = self.config.soul or "你是一个有用的助手。"
+        soul = self.config.soul or "你是一个有用的助手，直接简洁回答。"
         
+        # 构建消息列表（MiniMax API 需要标准消息格式，不是字符串）
+        messages = [{"role": "user", "content": query}]
         if context:
-            prompt = f"【知识库】\n{context}\n\n【问题】\n{query}\n\n请根据知识库回答问题。"
-        else:
-            prompt = query
+            messages = [
+                {"role": "system", "content": f"【知识库】\n{context}\n\n请根据知识库回答问题，简洁准确。"},
+                {"role": "user", "content": query}
+            ]
         
         try:
             # 加载全局LLM配置
@@ -94,19 +97,19 @@ class BotInstance:
                 with open(llm_config_path) as f:
                     llm_config = json.load(f)
             else:
-                llm_config = {"provider": "minimax", "model": "MiniMax-2.7"}
+                llm_config = {"provider": "minimax", "model": "MiniMax-M2.7"}
             
-            # API Key
-            api_key = os.environ.get("MINIMAX_API_KEY", "")
-            if not api_key:
-                api_key = os.environ.get("OPENAI_API_KEY", "")
-            llm_config["api_key"] = api_key
+            # API Key（优先用配置文件的key，只有显式设置了MINIMAX_API_KEY才覆盖）
+            minimax_key = os.environ.get("MINIMAX_API_KEY", "")
+            if minimax_key and len(minimax_key) > 10:
+                llm_config["api_key"] = minimax_key
+            # 否则保留 llm_config.json 中的 key
             
-            if not api_key:
+            if not llm_config.get("api_key"):
                 return "⚠️ LLM API Key 未配置，请在 LLM 配置页面设置"
             
             llm = LLMFactory.create(llm_config)
-            response = llm.chat(prompt, system=soul)
+            response = llm.chat(messages)
             return response
         except Exception as e:
             return f"抱歉，我现在无法回答这个问题。"
