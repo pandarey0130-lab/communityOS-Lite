@@ -26,6 +26,7 @@ python admin/app.py
 - 管理端监听：**`127.0.0.1:8877`**（代码写死，与 `.env.example` 里的 PORT 可能不一致）
 - Lite 页面：**http://127.0.0.1:8877/lite**（当前路由**无登录**，仅应本机使用）
 - 启动 `admin/app.py` 时，lifespan 会**自动拉起** `admin/telegram_runner.py` 子进程；也可用 API `/api/telegram/start|stop|status` 管理（需与 app 内全局进程变量一致）
+- 冒烟（无外网 TG/LLM）：`python scripts/smoke_lite.py`
 
 ## 安全与边界
 

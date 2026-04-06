@@ -40,6 +40,8 @@ Optional smoke test (no server on port needed):
 python scripts/smoke_lite.py
 ```
 
+（`smoke_lite.py` 只校验本机 FastAPI 路由与 `/lite` 页面，**不会**请求 Telegram 或 LLM 外网。）
+
 ## How to Use
 
 1. Go to **@BotFather** in Telegram → Create new bot → Copy token
