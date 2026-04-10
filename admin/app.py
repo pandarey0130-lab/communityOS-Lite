@@ -317,7 +317,22 @@ async def panda_wechat_skill_short():
 
 @app.get("/lite")
 async def lite_page(request: Request):
-    """Lite version - simple UI（注入 API 根地址，避免内置预览里相对 /api 指错主机）"""
+    """Lite version - simple UI（可选密码保护：设置环境变量 LITE_PASSWORD 生效）"""
+    # 可选：Lite UI 密码保护（设置 LITE_PASSWORD 环境变量即可启用）
+    lite_pwd = os.environ.get("LITE_PASSWORD", "").strip()
+    if lite_pwd:
+        provided = (request.query_params.get("pwd") or "").strip()
+        if not provided or provided != lite_pwd:
+            return HTMLResponse(
+                "<html><body style='font-family:sans-serif;padding:40px;text-align:center'>"
+                "<h2>🔐 CommunityOS Lite</h2>"
+                "<p>请提供访问密码：</p>"
+                "<form method='get'><input type='password' name='pwd' placeholder='Password' style='padding:8px'>"
+                "<button type='submit' style='padding:8px 16px;margin-left:8px'>进入</button></form>"
+                "<p style='color:#888;font-size:13px;margin-top:20px'>密码通过环境变量 LITE_PASSWORD 设置</p>"
+                "</body></html>",
+                status_code=401
+            )
     path = BASE_DIR / "admin" / "lite.html"
     html = path.read_text(encoding="utf-8")
     base = str(request.base_url).rstrip("/")

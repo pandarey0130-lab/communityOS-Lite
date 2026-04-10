@@ -1,15 +1,17 @@
 {
   "name": "community-os-lite",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Lightweight multi-bot Telegram admin with LLM support. FastAPI + Lite UI + long-polling telegram_runner. Supports MiniMax, OpenAI, Anthropic, DeepSeek.",
   "author": "CommunityOS",
-  "tags": ["telegram", "bot", "llm", "ai", "fastapi"],
-  "repo": "https://github.com/community-os/communityOS-Lite",
+  "tags": ["telegram", "bot", "llm", "ai", "fastapi", "open-source"],
+  "repo": "https://github.com/pandarey0130-lab/communityOS-Lite",
   "license": "MIT",
   "security": {
     "local_only": true,
     "requires_env": ["TELEGRAM_BOT_TOKEN", "MINIMAX_API_KEY"],
-    "no_auth": true,
+    "optional_env": ["LITE_PASSWORD"],
+    "no_auth": false,
+    "auth_note": "Lite UI supports optional password via LITE_PASSWORD env var. Without it, /lite is unprotected — only use on localhost.",
     "outbound": ["api.telegram.org", "LLM providers"]
   }
 }

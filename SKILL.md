@@ -43,6 +43,7 @@ python admin/app.py
 |------|------|
 | LLM | `MINIMAX_API_KEY`（或 OpenAI / Anthropic / DeepSeek 等，与后台「LLM 配置」一致） |
 | Telegram | 单 Bot 可用 `TELEGRAM_BOT_TOKEN`；多 Bot 时 runner 会读 `{BOT_ID}_TOKEN`，`BOT_ID` 为 `bots.json` 里 `bot_id` 的大写（若含空格，环境变量名不实用，**优先在 Lite UI 保存 token**） |
+| Lite UI 密码（可选） | `LITE_PASSWORD=secret123` — 设置后访问 `/lite?pwd=secret123` 需输入密码；不设置则无需密码（仅本机使用） |
 
 `telegram_runner` 解析顺序（简化）：`bots.json` 的 `bot_token` → 非占位则直接用；否则 `{BOT_ID}_TOKEN` → `TELEGRAM_BOT_TOKEN`。
 
