@@ -32,7 +32,8 @@ cp .env.example .env
 python admin/app.py
 ```
 
-Visit: http://127.0.0.1:8877/lite
+- 产品介绍（官网式单页，无需登录）：http://127.0.0.1:8877/intro  
+- 控制台：http://127.0.0.1:8877/lite
 
 Optional smoke test (no server on port needed):
 
@@ -86,7 +87,7 @@ With privacy **OFF**, the bot receives **many** group messages. Protect your **t
 
 | Provider | Default Model | Notes |
 |----------|---------------|-------|
-| MiniMax | MiniMax-2.7 | Free tier available |
+| MiniMax | MiniMax-M2.7 | Free tier available |
 | OpenAI | GPT-4o | Paid |
 | Anthropic | Claude 3.5 Sonnet | Paid |
 | DeepSeek | DeepSeek Chat | Cheap |

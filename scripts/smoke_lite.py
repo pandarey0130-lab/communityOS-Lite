@@ -24,6 +24,11 @@ from admin.app import app
 async def _run() -> None:
     async with ASGITransport(app=app) as transport:
         async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
+            r = await c.get("/intro")
+            assert r.status_code == 200, r.status_code
+            assert "CommunityOS Lite" in r.text
+            assert "打开控制台" in r.text or "Lite" in r.text
+
             r = await c.get("/lite")
             assert r.status_code == 200, r.status_code
             body = r.text
@@ -53,7 +58,7 @@ async def _run() -> None:
 
 def main() -> None:
     asyncio.run(_run())
-    print("smoke_lite: OK (/lite, /api/health, /api/bots, /api/dashboard, /api/llm-config)")
+    print("smoke_lite: OK (/intro, /lite, /api/health, /api/bots, /api/dashboard, /api/llm-config)")
 
 
 if __name__ == "__main__":

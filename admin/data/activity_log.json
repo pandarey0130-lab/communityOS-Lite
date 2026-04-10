@@ -1,3 +1,53 @@
 {
-  "logs": []
+  "logs": [
+    {
+      "timestamp": "2026-04-10T13:45:37+08:00",
+      "level": "info",
+      "action": "telegram_auto_start",
+      "user": "system",
+      "detail": "Telegram Runner auto-started on app startup"
+    },
+    {
+      "timestamp": "2026-04-10T13:45:37+08:00",
+      "level": "info",
+      "action": "system",
+      "user": "system",
+      "detail": "管理后台已重启"
+    },
+    {
+      "timestamp": "2026-04-10T13:45:37+08:00",
+      "level": "info",
+      "action": "system",
+      "user": "system",
+      "detail": "管理后台已重启"
+    },
+    {
+      "timestamp": "2026-04-10T13:45:18+08:00",
+      "level": "info",
+      "action": "telegram_auto_start",
+      "user": "system",
+      "detail": "Telegram Runner auto-started on app startup"
+    },
+    {
+      "timestamp": "2026-04-10T13:45:18+08:00",
+      "level": "info",
+      "action": "system",
+      "user": "system",
+      "detail": "管理后台已重启"
+    },
+    {
+      "timestamp": "2026-04-10T13:45:18+08:00",
+      "level": "info",
+      "action": "system",
+      "user": "system",
+      "detail": "管理后台已重启"
+    },
+    {
+      "timestamp": "2026-04-10T13:45:11+08:00",
+      "level": "info",
+      "action": "system",
+      "user": "system",
+      "detail": "管理后台已重启"
+    }
+  ]
 }

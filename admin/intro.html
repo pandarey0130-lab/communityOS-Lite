@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CommunityOS Lite — 产品介绍</title>
+<style>
+:root {
+  --bg: #f5f5f5;
+  --card: #fff;
+  --text: #1a1a1a;
+  --muted: #666;
+  --accent: #dc2626;
+  --accent-hover: #b91c1c;
+  --border: #e5e7eb;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+.wrap { max-width: 960px; margin: 0 auto; padding: 24px 20px 48px; }
+.nav {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 0 28px; border-bottom: 1px solid var(--border); margin-bottom: 40px;
+}
+.logo { font-size: 18px; font-weight: 700; color: var(--text); text-decoration: none; }
+.nav a.cta {
+  display: inline-block; padding: 8px 18px; background: var(--accent); color: #fff !important;
+  border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600;
+}
+.nav a.cta:hover { background: var(--accent-hover); }
+.hero {
+  text-align: center; padding: 20px 0 48px;
+}
+.hero h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 16px; }
+.hero .tagline { font-size: 18px; color: var(--muted); max-width: 560px; margin: 0 auto 28px; }
+.hero .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn {
+  display: inline-block; padding: 12px 24px; border-radius: 10px; font-size: 15px; font-weight: 600;
+  text-decoration: none; cursor: pointer; border: none; font: inherit;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: #fafafa; }
+.section-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; text-align: center; }
+.grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 40px;
+}
+.card {
+  background: var(--card); border-radius: 14px; padding: 22px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid var(--border);
+}
+.card h3 { font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+.note {
+  background: #fef2f2; border: 1px solid #fecaca; border-radius: 14px; padding: 20px 22px; margin-bottom: 40px;
+}
+.note h3 { font-size: 16px; color: #991b1b; margin-bottom: 10px; }
+.note p { font-size: 14px; color: #7f1d1d; line-height: 1.7; }
+.note code { background: rgba(255,255,255,0.7); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+.dual { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px; }
+@media (max-width: 640px) { .dual { grid-template-columns: 1fr; } }
+.dual .box { font-size: 13px; color: var(--muted); }
+.dual .box strong { color: var(--text); display: block; margin-bottom: 6px; }
+footer {
+  text-align: center; padding-top: 32px; border-top: 1px solid var(--border);
+  font-size: 13px; color: #888;
+}
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+.lang-note { font-size: 12px; color: #999; margin-top: 24px; text-align: center; }
+/* Agent Skill 安装：层次与可复制路径 */
+.skill-callout-warn {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 4px solid #d97706;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 22px;
+}
+.skill-callout-warn h4 { font-size: 15px; color: #92400e; margin: 0 0 8px 0; }
+.skill-callout-warn p { font-size: 14px; color: #78350f; line-height: 1.7; margin: 0; }
+.skill-callout-warn code { font-size: 13px; background: rgba(255,255,255,0.7); padding: 2px 6px; border-radius: 4px; }
+.skill-steps-wrap h4 { font-size: 15px; color: var(--text); margin: 0 0 14px 0; }
+.skill-step-list { margin: 0; padding-left: 22px; color: var(--muted); font-size: 14px; line-height: 1.75; }
+.skill-step-list > li { margin-bottom: 18px; }
+.skill-step-list > li:last-child { margin-bottom: 0; }
+.skill-step-list strong { color: var(--text); }
+.path-block {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 8px;
+  word-break: break-all;
+  color: #0f172a;
+}
+.path-block-label { font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 6px; letter-spacing: 0.02em; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav">
+    <a class="logo" href="/intro">🤖 CommunityOS Lite</a>
+    <a class="cta" href="/lite">打开控制台</a>
+  </nav>
+
+  <header class="hero">
+    <h1>轻量多 Bot Telegram 控制台</h1>
+    <p class="tagline">
+      本机 FastAPI + 长轮询 <code style="background:#eee;padding:2px 8px;border-radius:6px;font-size:15px">getUpdates</code>，
+      统一配置大模型与文本知识库，几分钟搭好社群自动应答。
+    </p>
+    <div class="actions">
+      <a class="btn btn-primary" href="/lite">进入 Lite 控制台</a>
+      <a class="btn btn-secondary" href="#communityos-skill">Agent Skill 安装说明</a>
+      <a class="btn btn-secondary" href="https://github.com/pandarey0130-lab/communityOS-Lite" target="_blank" rel="noopener">GitHub 仓库</a>
+    </div>
+  </header>
+
+  <h2 class="section-title">核心能力</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>🤖 多 Bot 管理</h3>
+      <p>创建、启用/停用、分别配置 Token、人设（Soul）与知识片段，适合多社群、多品牌分身。</p>
+    </div>
+    <div class="card">
+      <h3>✨ 全局 LLM</h3>
+      <p>MiniMax、OpenAI、Claude、DeepSeek 等统一在「LLM」页配置；所有 Bot 共用一套推理后端，按需切换模型。</p>
+    </div>
+    <div class="card">
+      <h3>📚 文本知识库</h3>
+      <p>无需向量库，直接把说明、FAQ 贴进知识文本，回答会优先贴合你提供的范围。</p>
+    </div>
+    <div class="card">
+      <h3>💬 群聊自动应答</h3>
+      <p>开启被动问答后，群内文本可触发回复（需结合 Telegram 群隐私设置，见下方说明）。</p>
+    </div>
+    <div class="card">
+      <h3>🔒 私聊开关</h3>
+      <p>按 Bot 控制是否接受私信，避免运营号被私聊淹没。</p>
+    </div>
+    <div class="card">
+      <h3>🏠 仅本机管理</h3>
+      <p>默认绑定 <code>127.0.0.1</code>，适合本机或内网使用；请勿将控制台端口直接暴露公网。</p>
+    </div>
+  </div>
+
+  <div class="note">
+    <h3>📵 Telegram 群隐私（群里「没反应」时先看这里）</h3>
+    <p>新机器人默认开启 <strong>Group Privacy</strong>。开启时，群里往往只有命令、回复机器人、<strong>@机器人用户名</strong> 的消息会推送到本服务。</p>
+    <p style="margin-top:10px">若希望<strong>普通聊天</strong>也能触发自动回复：在 <strong>@BotFather</strong> → <strong>/mybots</strong> → 选你的 Bot → <strong>Bot Settings</strong> → <strong>Group Privacy</strong> → <strong>Turn off</strong>。</p>
+    <p class="lang-note" style="margin-top:14px;text-align:left;color:#991b1b">
+      <strong>EN:</strong> New bots default to privacy ON. For plain group messages to reach Lite, turn <strong>Group Privacy</strong> OFF in BotFather. Private chats are unaffected.
+    </p>
+  </div>
+
+  <h2 class="section-title">与完整 CommunityOS 的区别</h2>
+  <div class="card" style="margin-bottom:40px">
+    <div class="dual">
+      <div class="box">
+        <strong>Lite（本页产品）</strong>
+        单进程、JSON 配置、无 Harness 治理引擎；适合快速上线、单机运维。
+      </div>
+      <div class="box">
+        <strong>完整版</strong>
+        含 <code>harness.yaml</code>、多 Bot 协作与治理组件；需要脚手架与协作编排时再选用完整栈。
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title" id="communityos-skill">CommunityOS Lite · Agent Skill 安装</h2>
+  <div class="card skill-install" style="margin-bottom:40px">
+    <div class="skill-callout-warn" role="note">
+      <h4>⚠️ 请先区分产品</h4>
+      <p>本 Skill 只说明<strong>本仓库</strong>里 <strong>Telegram Lite 控制台</strong>的部署与排错。与<strong>微信 / 小程序</strong>等 Agent Skill <strong>不是同一产品</strong>；请勿与 <code>panda-wechat-skill</code> 等目录混放、嵌套或随意改名。</p>
+    </div>
+    <div class="skill-steps-wrap">
+      <h4>推荐步骤（Cursor）</h4>
+      <ol class="skill-step-list">
+        <li>
+          在<strong>克隆下来的本仓库</strong>中找到 Skill 目录：
+          <div class="path-block-label">来源（仓库内）</div>
+          <div class="path-block">.cursor/skills/community-os-lite/</div>
+        </li>
+        <li>
+          将<strong>整个</strong> <code>community-os-lite</code> 文件夹复制到你的目标工程：
+          <div class="path-block-label">目标（你的项目）</div>
+          <div class="path-block">你的项目/.cursor/skills/community-os-lite/</div>
+          <p style="margin:10px 0 0 0;font-size:13px;color:#94a3b8">其他编辑器若 skills 根路径不同，只要保证<strong>最后一级文件夹名</strong>仍为 <code>community-os-lite</code> 即可。</p>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <footer>
+    <p>CommunityOS Lite · MIT License</p>
+    <p style="margin-top:8px"><a href="/lite">控制台</a> · <a href="/intro">产品介绍</a> · <a href="https://github.com/pandarey0130-lab/communityOS-Lite" target="_blank" rel="noopener">GitHub</a></p>
+  </footer>
+</div>
+</body>
+</html>

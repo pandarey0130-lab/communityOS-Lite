@@ -23,7 +23,7 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from fastapi import FastAPI, HTTPException, Request, Form, UploadFile, File, Response
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -136,70 +136,26 @@ def _init_default_data():
     if not bots.get("bots"):
         bots["bots"] = [
             {
-                "bot_id": "panda", "name": "小P", "avatar": "🐼",
-                "bot_token": "TELEGRAM_BOT_TOKEN_PANDA",
+                "bot_id": "my_bot", "name": "My Bot", "avatar": "🤖",
+                "bot_token": "YOUR_TELEGRAM_BOT_TOKEN",
                 "is_admin": True, "enabled": True, "created_at": ts(),
-                "llm": {"provider": "minimax", "model": "MiniMax-2.7", "api_key_env": "MINIMAX_API_KEY"},
+                "llm": {"provider": "minimax", "model": "MiniMax-M2.7", "api_key_env": "MINIMAX_API_KEY"},
                 "modes": {
-                    "passive_qa": True, "welcome": True, "join_discussion": True,
-                    "boost_atmosphere": False, "scheduled_broadcast": True, "api_data_push": False
-                },
-                "knowledge": {"enabled": True, "project_id": "general"},
-                "welcome": {"enabled": True, "template": "欢迎 {name} 加入群聊！🎉 有问题随时问我~"},
-                "broadcast": {
-                    "schedule": "0 9 * * *", "content_source": "manual",
-                    "api_endpoint": "", "template": "早安！今天是 {date}，祝你有美好的一天！☀️"
-                },
-                "interval_broadcast": {
-                    "enabled": False,
-                    "message": "",
-                    "interval_seconds": 30
-                },
-                "groups": [], "soul": "友善、乐于助人的AI助手"
-            },
-            {
-                "bot_id": "cypher", "name": "Cypher", "avatar": "🔐",
-                "bot_token": "TELEGRAM_BOT_TOKEN_CYPHER",
-                "is_admin": False, "enabled": True, "created_at": ts(),
-                "llm": {"provider": "claude_code", "model": "Claude-3.5", "api_key_env": "CLAUDE_API_KEY"},
-                "modes": {
-                    "passive_qa": True, "welcome": False, "join_discussion": True,
-                    "boost_atmosphere": False, "scheduled_broadcast": False, "api_data_push": True
+                    "passive_qa": True, "welcome": False, "join_discussion": False,
+                    "boost_atmosphere": False, "scheduled_broadcast": False, "api_data_push": False
                 },
                 "knowledge": {"enabled": False, "project_id": ""},
                 "welcome": {"enabled": False, "template": ""},
                 "broadcast": {
-                    "schedule": "0 20 * * *", "content_source": "api",
-                    "api_endpoint": "https://api.example.com/news", "template": "{content}"
+                    "schedule": "0 9 * * *", "content_source": "manual",
+                    "api_endpoint": "", "template": ""
                 },
                 "interval_broadcast": {
                     "enabled": False,
                     "message": "",
                     "interval_seconds": 30
                 },
-                "groups": [], "soul": "专注于技术与安全的AI助手"
-            },
-            {
-                "bot_id": "buzz", "name": "Buzz", "avatar": "📣",
-                "bot_token": "TELEGRAM_BOT_TOKEN_BUZZ",
-                "is_admin": False, "enabled": False, "created_at": ts(),
-                "llm": {"provider": "apiyi", "model": "GPT-4o", "api_key_env": "APIYI_KEY"},
-                "modes": {
-                    "passive_qa": False, "welcome": True, "join_discussion": False,
-                    "boost_atmosphere": True, "scheduled_broadcast": True, "api_data_push": False
-                },
-                "knowledge": {"enabled": False, "project_id": ""},
-                "welcome": {"enabled": True, "template": "欢迎来到 {group_name}！我是Buzz ~ 🚀"},
-                "broadcast": {
-                    "schedule": "0 12,18 * * *", "content_source": "rss",
-                    "api_endpoint": "https://feeds.example.com/web3", "template": "【Web3日报】{content}"
-                },
-                "interval_broadcast": {
-                    "enabled": False,
-                    "message": "",
-                    "interval_seconds": 30
-                },
-                "groups": [], "soul": "热情洋溢的氛围组AI助手"
+                "groups": [], "soul": "You are a helpful community bot."
             }
         ]
         save_json("bots", bots)
@@ -300,6 +256,64 @@ async def root(request: Request):
     if not username:
         return RedirectResponse(url="/login")
     return RedirectResponse(url="/admin")
+
+@app.get("/intro")
+async def intro_page(request: Request):
+    """产品介绍页（公开，无需登录；官网式说明）"""
+    path = BASE_DIR / "admin" / "intro.html"
+    html = path.read_text(encoding="utf-8")
+    base = str(request.base_url).rstrip("/")
+    for suffix in ("/lite", "/intro", "/panda-wechat-skill"):
+        html = html.replace(f'href="{suffix}"', f'href="{base}{suffix}"')
+    return HTMLResponse(html)
+
+
+@app.get("/intro/")
+async def intro_page_slash(request: Request):
+    """兼容带尾斜杠访问"""
+    return RedirectResponse(url="/intro", status_code=307)
+
+
+def _panda_skill_site_index() -> Path:
+    """Panda WeChat Skill 官网 index.html（勿使用已移除的 admin/panda-wechat-skill.html）。"""
+    return (BASE_DIR / "panda-wechat-skill" / "website" / "index.html").resolve()
+
+
+@app.get("/panda-wechat-skill/")
+async def panda_wechat_skill_trailing_slash():
+    return RedirectResponse(url="/panda-wechat-skill", status_code=307)
+
+
+@app.get("/panda-wechat-skill")
+async def panda_wechat_skill_page():
+    """Panda WeChat Skill 官网（静态文件：panda-wechat-skill/website/index.html）"""
+    path = _panda_skill_site_index()
+    if not path.is_file():
+        detail = (
+            "<!DOCTYPE html><html lang=\"zh-CN\"><head><meta charset=\"utf-8\"/>"
+            "<title>Panda WeChat Skill — 未就绪</title></head>"
+            "<body style=\"font-family:system-ui,-apple-system,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.6\">"
+            "<h1>页面未就绪（503）</h1>"
+            "<p>服务器未在磁盘上找到官网 HTML，期望路径为：</p>"
+            f"<pre style=\"background:#f4f4f5;padding:14px;border-radius:8px;overflow:auto;font-size:13px\">{path}</pre>"
+            "<p><strong>常见原因：</strong>运行中的进程仍是旧代码，在读取已删除的 <code>admin/panda-wechat-skill.html</code>，会直接导致 <strong>500</strong>。"
+            "请拉取最新代码后<strong>重启</strong> <code>python admin/app.py</code>。</p>"
+            "<p>若路径正确仍失败，请确认仓库里存在目录 <code>panda-wechat-skill/website/</code> 与文件 <code>index.html</code>。</p>"
+            "</body></html>"
+        )
+        return HTMLResponse(content=detail, status_code=503)
+    return FileResponse(
+        path,
+        media_type="text/html; charset=utf-8",
+        headers={"Cache-Control": "no-cache"},
+    )
+
+
+@app.get("/panda")
+async def panda_wechat_skill_short():
+    """Panda WeChat Skill 短链，同 /panda-wechat-skill"""
+    return RedirectResponse(url="/panda-wechat-skill", status_code=307)
+
 
 @app.get("/lite")
 async def lite_page(request: Request):
@@ -413,7 +427,7 @@ async def api_bots_create(request: Request, bot: dict):
         "soul": bot.get("soul", ""),
         "enabled": bot.get("enabled", True),
         "created_at": ts(),
-        "llm": bot.get("llm", {"provider": "minimax", "model": "MiniMax-2.7", "api_key_env": ""}),
+        "llm": bot.get("llm", {"provider": "minimax", "model": "MiniMax-M2.7", "api_key_env": ""}),
         "modes": bot.get("modes", {
             "passive_qa": True, "welcome": False, "join_discussion": False,
             "boost_atmosphere": False, "scheduled_broadcast": False, "api_data_push": False
@@ -1128,7 +1142,7 @@ async def api_llm_config_get(request: Request):
     require_auth(request)
     config = load_json("llm_config", {
         "provider": "minimax",
-        "model": "MiniMax-2.7",
+        "model": "MiniMax-M2.7",
         "api_key": "",
         "temperature": 0.7,
         "max_tokens": 2000
@@ -1137,10 +1151,15 @@ async def api_llm_config_get(request: Request):
 
 @app.put("/api/llm-config")
 async def api_llm_config_save(request: Request, config: dict):
-    require_auth(request)
-    save_json("llm_config", config)
-    log_action("llm_config_save", require_auth(request), f"更新全局LLM配置: {config.get('provider')}/{config.get('model')}")
-    return JSONResponse({"ok": True, "config": config})
+    username = require_auth(request)
+    existing = load_json("llm_config", {})
+    merged = {**existing, **config}
+    # 前端空字符串保存时不要误删已有 key（用户只改 provider/model 时常见）
+    if not (config.get("api_key") or "").strip() and (existing.get("api_key") or "").strip():
+        merged["api_key"] = existing["api_key"]
+    save_json("llm_config", merged)
+    log_action("llm_config_save", username, f"更新全局LLM配置: {merged.get('provider')}/{merged.get('model')}")
+    return JSONResponse({"ok": True, "config": merged})
 
 # ════════════════════════════════════════════════════════════
 #  API：Logs

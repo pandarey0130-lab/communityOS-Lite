@@ -1,10 +1,11 @@
 {
-  "name": "communityos-lite",
+  "name": "community-os-lite",
   "version": "1.2.5",
-  "description": "Local Telegram bot admin (FastAPI + Lite UI) with LLM and per-bot knowledge. Requires Telegram token(s) and LLM API key; outbound to Telegram and chosen LLM provider.",
-  "author": "Panda",
-  "tags": ["telegram", "bot", "llm", "ai"],
-  "repo": "https://github.com/pandarey0130-lab/communityOS-Lite",
+  "description": "Lightweight multi-bot Telegram admin with LLM support. FastAPI + Lite UI + long-polling telegram_runner. Supports MiniMax, OpenAI, Anthropic, DeepSeek.",
+  "author": "CommunityOS",
+  "tags": ["telegram", "bot", "llm", "ai", "fastapi"],
+  "repo": "https://github.com/community-os/communityOS-Lite",
+  "license": "MIT",
   "security": {
     "local_only": true,
     "requires_env": ["TELEGRAM_BOT_TOKEN", "MINIMAX_API_KEY"],

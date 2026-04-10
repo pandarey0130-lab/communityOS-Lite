@@ -99,13 +99,14 @@ class BotInstance:
             else:
                 llm_config = {"provider": "minimax", "model": "MiniMax-M2.7"}
             
-            # API Key（优先用配置文件的key，只有显式设置了MINIMAX_API_KEY才覆盖）
-            minimax_key = os.environ.get("MINIMAX_API_KEY", "")
-            if minimax_key and len(minimax_key) > 10:
-                llm_config["api_key"] = minimax_key
-            # 否则保留 llm_config.json 中的 key
-            
-            if not llm_config.get("api_key"):
+            # 优先 llm_config.json；仅当文件未存 key 时用环境变量 MINIMAX_API_KEY（避免 .env 占位符覆盖）
+            file_key = (llm_config.get("api_key") or "").strip()
+            if not file_key:
+                env_key = (os.environ.get("MINIMAX_API_KEY") or "").strip()
+                if env_key and len(env_key) > 10:
+                    llm_config["api_key"] = env_key
+
+            if not (llm_config.get("api_key") or "").strip():
                 return "⚠️ LLM API Key 未配置，请在 LLM 配置页面设置"
             
             llm = LLMFactory.create(llm_config)

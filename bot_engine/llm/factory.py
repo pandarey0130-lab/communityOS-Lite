@@ -36,7 +36,18 @@ class MiniMaxLLM(LLMBase):
             resp = requests.post(self.API_URL, headers=headers, json=data, timeout=30)
             resp.raise_for_status()
             result = resp.json()
-            return result.get("choices", [{}])[0].get("message", {}).get("content", "")
+            base = result.get("base_resp") or {}
+            code = base.get("status_code")
+            if code not in (0, None):
+                msg = (base.get("status_msg") or "MiniMax 接口错误")[:300]
+                print(f"MiniMax API error: {base}")
+                return f"⚠️ 模型调用失败：{msg}"
+            choices = result.get("choices") or []
+            if not choices or not isinstance(choices[0], dict):
+                print(f"MiniMax API error: empty choices, base_resp={base}")
+                return "抱歉，AI 未返回有效内容。"
+            message = choices[0].get("message") or {}
+            return (message.get("content") or "").strip()
         except Exception as e:
             print(f"MiniMax API error: {e}")
             return "抱歉，AI服务暂时不可用。"
@@ -140,7 +151,13 @@ class LLMFactory:
         """Create LLM instance from config"""
         provider = config.get("provider", "minimax").lower()
         model = config.get("model", "MiniMax-M2.7")
-        api_key = config.get("api_key_env", "") or config.get("api_key", "") or os.environ.get(f"{provider.upper()}_API_KEY", "")
+        api_key = (config.get("api_key") or "").strip()
+        if not api_key:
+            env_name = (config.get("api_key_env") or "").strip()
+            if env_name:
+                api_key = (os.environ.get(env_name, "") or "").strip()
+        if not api_key:
+            api_key = (os.environ.get(f"{provider.upper()}_API_KEY", "") or "").strip()
         
         llm_class = cls.PROVIDERS.get(provider, MiniMaxLLM)
         return llm_class(api_key=api_key, model=model)

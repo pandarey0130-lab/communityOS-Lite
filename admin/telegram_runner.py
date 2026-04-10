@@ -123,10 +123,13 @@ class TelegramRunner:
 
         try:
             llm_config = load_json("llm_config", {})
-            minimax_key = os.environ.get("MINIMAX_API_KEY", "")
-            if minimax_key and len(minimax_key) > 10:
-                llm_config["api_key"] = minimax_key
-            if not llm_config.get("api_key"):
+            # 与 Lite 保存的 llm_config.json 优先：避免 .env 里占位符（如 your_minimax_key_here）覆盖真实 key
+            file_key = (llm_config.get("api_key") or "").strip()
+            if not file_key:
+                env_key = (os.environ.get("MINIMAX_API_KEY") or "").strip()
+                if env_key and len(env_key) > 10:
+                    llm_config["api_key"] = env_key
+            if not (llm_config.get("api_key") or "").strip():
                 return "⚠️ LLM API Key 未配置，请在 Lite 后台「LLM 配置」中填写。"
 
             llm = LLMFactory.create(llm_config)

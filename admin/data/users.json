@@ -1,4 +1,10 @@
 {
-  "users": [],
+  "users": [
+    {
+      "username": "admin",
+      "password": "",
+      "role": "admin"
+    }
+  ],
   "sessions": {}
 }
